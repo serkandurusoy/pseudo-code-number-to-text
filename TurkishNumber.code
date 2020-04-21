@@ -1,0 +1,79 @@
+/*
+
+  !!! PSEUDO JAVA CODE !!!
+
+*/
+public class TurkishNumber {
+
+  birler =
+    {"BİR", "İKİ", "ÜÇ", "DÖRT", "BEŞ", "ALTI", "YEDİ", "SEKİZ", "DOKUZ"};
+
+  onlar =
+    {"ON", "YİRMİ", "OTUZ", "KIRK", "ELLİ", "ALTMIŞ", "YETMİŞ", "SEKSEN", "DOKSAN" };
+
+  katlar =
+    {"", "BİN", "MİLYON", "MİLYAR", "TRİLYON"};
+
+
+  sayi2Yazi(sayi) {
+    sonuc = new StringBuffer();
+    for (int i = katlar.length - 1; i >= 0; i--) {
+      long cutoff = (long) Math.pow((double) 10, (double) (i * 3));
+      if (sayi >= cutoff) {
+        int thisPart = (int) (sayi / cutoff);
+        if (thisPart >= 100) {
+          if (thisPart / 100 > 1) {
+            sonuc.append(birler[thisPart / 100 -1]);
+          }
+          sonuc.append("YÜZ");
+          thisPart = thisPart % 100;
+        }
+        if (thisPart >= 10) {
+          sonuc.append(onlar[(thisPart / 10) - 1]);
+          thisPart = thisPart % 10;
+        }
+        if (thisPart >= 1) {
+          if (!(cutoff == 1000 && thisPart == 1 && sayi < 10000)) {
+            sonuc.append(birler[thisPart-1]);
+          }
+        }
+        sonuc.append(katlar[i]);
+        sayi = sayi % cutoff;
+      }
+    }
+    /*if (sonuc.length() != 0) {
+      sonuc.deleteCharAt(0);
+    }*/
+    return sonuc.toString();
+  }
+
+  sayi2YaziForPara(para) {
+    sonuc = new String[]{"", ""};
+    if (para == 0) return sonuc;
+    String strPara = new BigDecimal(para).setScale(2, 4).toString();
+    int dotIndex = strPara.indexOf(".");
+    long kusurat =
+Long.valueOf(String.valueOf(strPara).substring(dotIndex+1));
+    sonuc[0] =  sayi2Yazi((long)para);
+    if (kusurat > 0) {
+      sonuc[1] = sayi2Yazi(kusurat);
+    }
+    return sonuc;
+  }
+
+  sayi2YaziForParaFormatli(para) {
+    sonuc = new StringBuffer();
+    String[] sonucListesi = sayi2YaziForPara(para);
+    if (!sonucListesi[0].isEmpty()) {
+      sonuc.append(sonucListesi[0]);
+      sonuc.append(" TL ");
+      if (!sonucListesi[1].isEmpty()) {
+        sonuc.append(" ");
+        sonuc.append(sonucListesi[1]);
+        sonuc.append(" KR");
+      }
+    }
+    return sonuc.toString();
+  }
+}
+
